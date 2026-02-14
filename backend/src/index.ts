@@ -1,13 +1,25 @@
-import { Hono } from 'hono'
-import { cors } from 'hono/cors'
-import { pool } from './db'
+export default {
+  async fetch(request: Request, env: any) {
+    if (request.method === "POST") {
+      const body = await request.json()
 
-const app = new Hono()
-app.use('/*', cors())
+      await env.DB.prepare(
+        "INSERT INTO bookings (name, phone, service, date, time) VALUES (?, ?, ?, ?, ?)"
+      )
+        .bind(body.name, body.phone, body.service, body.date, body.time)
+        .run()
 
-app.get('/services', async (c) => {
-  const [rows] = await pool.query('SELECT * FROM services')
-  return c.json(rows)
-})
+      return new Response("Booking saved")
+    }
 
-export default app
+    if (request.method === "GET") {
+      const { results } = await env.DB.prepare(
+        "SELECT * FROM bookings"
+      ).all()
+
+      return Response.json(results)
+    }
+
+    return new Response("Not found", { status: 404 })
+  },
+}

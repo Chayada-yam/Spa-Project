@@ -1,0 +1,8 @@
+name = "spa-backend"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "my_db"
+database_id = "ใส่จาก Cloudflare"

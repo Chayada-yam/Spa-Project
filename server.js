@@ -1,142 +1,119 @@
-const express = require('express');
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
-const session = require('express-session');
+const express = require("express");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const mysql = require("mysql2");
 
 const app = express();
-const PORT = 3000;
 
-// ===== SESSION =====
+// ================= DATABASE =================
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "spa_db"
+});
+
+db.connect(err => {
+  if (err) {
+    console.error("Database connection failed:", err);
+    return;
+  }
+  console.log("MySQL Connected");
+});
+
+// ================= MIDDLEWARE =================
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
 app.use(session({
-    secret: 'spa_secret',
-    resave: false,
-    saveUninitialized: true
+  secret: "secretkey",
+  resave: false,
+  saveUninitialized: false
 }));
 
-// ===== DATABASE =====
-const db = new sqlite3.Database('./spa.db');
-
-db.serialize(() => {
-    db.run(`
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            password TEXT,
-            role TEXT
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS customers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            phone TEXT NOT NULL
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS bookings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            customer_id INTEGER,
-            service TEXT,
-            booking_date TEXT
-        )
-    `);
-
-    db.get("SELECT COUNT(*) as count FROM users", (err, row) => {
-        if (row.count === 0) {
-            db.run(`INSERT INTO users (username,password,role) VALUES ('admin','1234','admin')`);
-            db.run(`INSERT INTO users (username,password,role) VALUES ('staff','1234','staff')`);
-        }
-    });
-});
-
-// ===== MIDDLEWARE =====
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// ===== ROUTES =====
-
-// หน้าแรก = login
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
-// LOGIN
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
-    db.get(
-        `SELECT * FROM users WHERE username=? AND password=?`,
-        [username, password],
-        (err, user) => {
-            if (!user) return res.status(401).json({ message: "Invalid" });
-
-            req.session.user = { id: user.id, role: user.role };
-            res.json({ role: user.role });
-        }
-    );
-});
-
-// AUTH CHECK
-function requireLogin(req, res, next) {
-    if (!req.session.user) return res.status(401).json({ message: "Login required" });
-    next();
+// ================= AUTH MIDDLEWARE =================
+function isLoggedIn(req, res, next) {
+  if (req.session.user) {
+    return next();
+  }
+  res.redirect("/login");
 }
 
-// ===== CUSTOMER API =====
-app.post('/customers', requireLogin, (req, res) => {
-    const { name, phone } = req.body;
+function isAdmin(req, res, next) {
+  if (req.session.user && req.session.user.role === "admin") {
+    return next();
+  }
+  res.status(403).send("Access denied");
+}
 
-    db.run(
-        `INSERT INTO customers (name, phone) VALUES (?, ?)`,
-        [name, phone],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ id: this.lastID });
-        }
-    );
+// ================= ROUTES =================
+
+// Default route → ถ้ายังไม่ login ให้ไป login
+app.get("/", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+
+  if (req.session.user.role === "admin") {
+    return res.redirect("/admin");
+  }
+
+  res.sendFile(__dirname + "/public/index.html");
 });
 
-app.get('/customers', requireLogin, (req, res) => {
-    db.all(`SELECT * FROM customers`, [], (err, rows) => {
-        res.json(rows);
-    });
+// Login Page
+app.get("/login", (req, res) => {
+  res.sendFile(__dirname + "/public/login.html");
 });
 
-// DELETE เฉพาะ admin
-app.delete('/customers/:id', requireLogin, (req, res) => {
-    if (req.session.user.role !== 'admin')
-        return res.status(403).json({ message: "Admin only" });
+// Login Process
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
 
-    db.run(`DELETE FROM customers WHERE id=?`, [req.params.id], () => {
-        res.json({ message: "Deleted" });
-    });
+  const sql = "SELECT * FROM users WHERE username = ?";
+  db.query(sql, [username], (err, results) => {
+
+    if (err) {
+      console.error(err);
+      return res.send("Database error");
+    }
+
+    if (results.length === 0) {
+      return res.send("User not found");
+    }
+
+    const user = results[0];
+
+    if (password === user.password) {
+      req.session.user = {
+        id: user.id,
+        role: user.role
+      };
+
+      if (user.role === "admin") {
+        return res.redirect("/admin");
+      }
+
+      return res.redirect("/");
+    }
+
+    res.send("Wrong password");
+  });
 });
 
-// ===== BOOKING API =====
-app.post('/bookings', requireLogin, (req, res) => {
-    const { customer_id, service, booking_date } = req.body;
-
-    db.run(
-        `INSERT INTO bookings (customer_id,service,booking_date) VALUES (?,?,?)`,
-        [customer_id, service, booking_date],
-        function () {
-            res.json({ id: this.lastID });
-        }
-    );
+// Logout
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/login");
+  });
 });
 
-app.get('/bookings', requireLogin, (req, res) => {
-    db.all(`
-        SELECT bookings.id, customers.name, service, booking_date
-        FROM bookings
-        JOIN customers ON bookings.customer_id = customers.id
-    `, [], (err, rows) => {
-        res.json(rows);
-    });
+// Admin Page
+app.get("/admin", isLoggedIn, isAdmin, (req, res) => {
+  res.sendFile(__dirname + "/public/dashboard.html");
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+// ================= SERVER =================
+app.listen(3000, () => {
+  console.log("Server running at http://localhost:3000");
 });

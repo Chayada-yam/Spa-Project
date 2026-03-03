@@ -1,25 +1,31 @@
-<body>
-    <div class="container">
-        <h1>Booking</h1>
+<h1>Booking System</h1>
 
-        <form id="bookingForm">
-            <input type="text" id="name" placeholder="Customer Name" required />
-            <input type="text" id="phone" placeholder="Phone Number" required />
-            <button type="submit">Save</button>
-        </form>
+<h2>Create Booking</h2>
+<form id="bookingForm">
+    <select id="customerSelect" required>
+        <option value="">Select Customer</option>
+    </select>
 
-        <h2>Customer List</h2>
+    <select id="service" required>
+        <option value="">Select Service</option>
+        <option value="Massage">Massage</option>
+        <option value="Facial">Facial</option>
+        <option value="Spa Package">Spa Package</option>
+    </select>
+
+    <input type="date" id="bookingDate" required />
+
+    <button type="submit">Book</button>
+</form>
+
+<h2>Booking List</h2>
 <table>
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Action</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Date</th>
         </tr>
     </thead>
-    <tbody id="customerList"></tbody>
+    <tbody id="bookingList"></tbody>
 </table>
-    </div>
-
-    <script src="/js/script.js"></script>
-</body>

@@ -1,18 +1,58 @@
-function loadPage(page) {
-    const content = document.getElementById("content");
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('bookingForm');
+    const customerList = document.getElementById('customerList');
 
-    if (page === "home") {
-        content.innerHTML = "<h1>Welcome to Spa</h1><p>Relax and refresh</p>";
+    // โหลดข้อมูลลูกค้าทั้งหมด
+    function loadCustomers() {
+        fetch('/customers')
+            .then(res => res.json())
+            .then(data => {
+                customerList.innerHTML = '';
+
+                data.forEach(customer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${customer.name}</td>
+                        <td>${customer.phone}</td>
+                        <td>
+                            <button onclick="deleteCustomer(${customer.id})">
+                                Delete
+                            </button>
+                        </td>
+                    `;
+                    customerList.appendChild(row);
+                });
+            });
     }
 
-    if (page === "services") {
-        content.innerHTML = "<h1>Our Services</h1><p>Massage, Facial, Aroma Therapy</p>";
-    }
+    // บันทึกข้อมูลใหม่
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-    if (page === "booking") {
-        content.innerHTML = "<h1>Book Now</h1><p>Booking form coming soon</p>";
-    }
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+
+        fetch('/customers', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, phone })
+        })
+        .then(res => res.json())
+        .then(() => {
+            form.reset();
+            loadCustomers();
+        });
+    });
+
+    loadCustomers();
+});
+
+// ฟังก์ชันลบลูกค้า
+function deleteCustomer(id) {
+    fetch(`/customers/${id}`, {
+        method: 'DELETE'
+    })
+    .then(() => location.reload());
 }
-
-// โหลดหน้าแรกอัตโนมัติ
-loadPage("home");

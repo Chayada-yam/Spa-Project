@@ -1,5 +1,7 @@
 const form = document.getElementById("bookingForm");
 const bookingList = document.getElementById("bookingList");
+const today = new Date().toISOString().split("T")[0];
+document.getElementById("bookingDate").setAttribute("min", today);
 
 form.addEventListener("submit", function(e) {
     e.preventDefault();

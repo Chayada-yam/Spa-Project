@@ -16,3 +16,6 @@ Team Members
 - Expressjs
 - HTML/CSS
 - Vercel Deployment
+
+## Deployment
+This project is deployed using Vercel.

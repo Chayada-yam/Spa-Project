@@ -18,7 +18,13 @@ form.addEventListener("submit", function(e) {
         <td>${date}</td>
     `;
 
+   
+
     bookingList.appendChild(row);
+
+    const total = bookingList.children.length;
+    document.getElementById("bookingCount").innerText =
+    "Total Bookings: " + total;
     alert("Booking created successfully");
 
     form.reset();

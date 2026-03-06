@@ -7,5 +7,52 @@
   <h1>Admin Dashboard</h1>
   <p>Welcome Admin</p>
   <a href="/logout">Logout</a>
+  <h2>Create Booking</h2>
+
+<form id=”bookingForm“>
+
+<label>Customer</label>
+<select id=”customerSelect“>
+<option>John</option>
+<option>Mary</option>
+</select>
+
+<label>Service</label>
+<select id=”service“>
+<option>Massage</option>
+<option>Facial</option>
+</select>
+
+<label>Date</label>
+<input type=”date“ id=”bookingDate“>
+
+<label>Time</label>
+<input type=”time“ id=”bookingTime“>
+
+<button type=”submit“>Create Booking</button>
+
+</form>
+<h2>Booking List</h2>
+
+<p id=”bookingCount“>Total Bookings: 0</p>
+
+<table border="1">
+<thead>
+<tr>
+<th>Customer</th>
+<th>Service</th>
+<th>Date</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody id=”bookingList“></tbody>
+
+</table>
+
+<script src=”js/app.js“></script>
+
+
+
 </body>
 </html>

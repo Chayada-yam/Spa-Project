@@ -74,3 +74,24 @@ text-decoration:none;
 a:hover{
 text-decoration:underline;
 }
+
+
+.login-container input{
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+.login-container button{
+width:100%;
+padding:10px;
+background:#d9a5b3;
+border:none;
+color:white;
+font-weight:bold;
+border-radius:6px;
+cursor:pointer;
+}
+
+.login-container button:hover{
+background:#c48a9a;
+}

@@ -9,6 +9,7 @@ form.addEventListener("submit", function(e) {
     const customer = document.getElementById("customerSelect").value;
     const service = document.getElementById("service").value;
     const date = document.getElementById("bookingDate").value;
+    const time = document.getElementById("bookingTime").value;
 
     const row = document.createElement("tr");
 
@@ -16,6 +17,7 @@ form.addEventListener("submit", function(e) {
         <td>${customer}</td>
         <td>${service}</td>
         <td>${date}</td>
+        <td>${time}</td>
     `;
 
    

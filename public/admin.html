@@ -1,32 +1,56 @@
-<h2>สมัครสมาชิก</h2>
+<h2>Admin Dashboard</h2>
 
-<form action="/api/register" method="POST">
+<h3>ลูกค้า</h3>
 
-<label>ชื่อ-นามสกุล</label>
-<input name="fullname" required>
+<table class="table" id="users"></table>
 
-<label>เบอร์โทร</label>
-<input name="phone" required>
+<h3>การจอง</h3>
 
-<label>ที่อยู่</label>
-<input name="address" required>
+<table class="table" id="bookings"></table>
 
-<label>ชื่อผู้ใช้</label>
-<input name="username" required>
+<script>
 
-<label>รหัสผ่าน</label>
-<input type="password" name="password" required>
+fetch("/api/users")
+.then(res=>res.json())
+.then(data=>{
 
-<label>ประเภทผู้ใช้</label>
-<select name="role">
+let html="<tr><th>ID</th><th>Name</th><th>Phone</th></tr>"
 
-<option value="user">ผู้ใช้บริการ</option>
-<option value="admin">แอดมิน</option>
+data.forEach(u=>{
 
-</select>
+html+=`
+<tr>
+<td>${u.id}</td>
+<td>${u.name}</td>
+<td>${u.phone}</td>
+</tr>
+`
 
-<button type="submit">สมัครสมาชิก</button>
+})
 
-</form>
+document.getElementById("users").innerHTML=html
 
-<a href="/login.html">ไปหน้า Login</a>
+})
+
+fetch("/api/history")
+.then(res=>res.json())
+.then(data=>{
+
+let html="<tr><th>Service</th><th>Date</th></tr>"
+
+data.forEach(b=>{
+
+html+=`
+<tr>
+<td>${b.service}</td>
+<td>${b.booking_date}</td>
+</tr>
+`
+
+})
+
+document.getElementById("bookings").innerHTML=html
+
+})
+
+</script>

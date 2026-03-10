@@ -1,13 +1,24 @@
-<h2>จองคิวสปา</h2>
+<div class="navbar">
 
-<form action="/api/bookings" method="POST">
+<a href="dashboard.html">หน้าหลัก</a>
+<a href="booking.html">จองสปา</a>
+<a href="history.html">ประวัติ</a>
+<a href="login.html">ออกจากระบบ</a>
 
-<label>บริการ</label>
-<input name="service" required>
+</div>
+<h2>เลือกวันเวลา</h2>
 
-<label>วันที่</label>
-<input type="date" name="booking_date" required>
+<form action="/api/book" method="POST">
 
-<button type="submit">ยืนยันการจอง</button>
+<select name="service">
+
+<option>นวดไทย</option>
+<option>นวดน้ำมัน</option>
+
+</select>
+
+<input type="datetime-local" name="date">
+
+<button>ยืนยันการจอง</button>
 
 </form>

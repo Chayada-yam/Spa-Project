@@ -1,77 +1,67 @@
 body{
-font-family:Arial, Helvetica, sans-serif;
-background:#f3f6fb;
 margin:0;
+font-family:Arial;
+background:#f4f6fb;
 }
 
 .navbar{
-background:#222;
-padding:15px;
+display:flex;
+justify-content:space-between;
+padding:15px 40px;
+background:#6c8cd5;
 color:white;
 }
 
 .navbar a{
 color:white;
-margin-right:15px;
+margin-left:15px;
 text-decoration:none;
 }
 
-.container{
-width:1000px;
-margin:auto;
-margin-top:40px;
+.navbar a:hover{
+text-decoration:underline;
 }
 
 .card{
+width:350px;
+margin:auto;
+margin-top:80px;
+padding:30px;
 background:white;
-padding:25px;
 border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
 
 .grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:20px;
+padding:40px;
 }
 
 .service{
-background:#fff;
+background:white;
 padding:20px;
+text-align:center;
 border-radius:10px;
 box-shadow:0 3px 10px rgba(0,0,0,0.1);
-text-align:center;
+}
+
+.service img{
+width:80px;
+}
+
+button{
+background:#3a6df0;
+color:white;
+border:none;
+padding:10px;
+border-radius:5px;
+width:100%;
 }
 
 input,select{
 width:100%;
 padding:10px;
-margin-top:10px;
-margin-bottom:15px;
-border:1px solid #ccc;
-border-radius:6px;
-}
-
-button{
-background:#ff7a59;
-color:white;
-border:none;
-padding:10px;
-width:100%;
-border-radius:6px;
-cursor:pointer;
-}
-
-button:hover{
-background:#ff5a30;
-}
-
-.table{
-width:100%;
-border-collapse:collapse;
-}
-
-.table th,.table td{
-border:1px solid #ddd;
-padding:10px;
+margin:10px 0;
 }

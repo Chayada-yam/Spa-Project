@@ -1,61 +1,27 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('bookingForm');
-    const customerSelect = document.getElementById('customerSelect');
-    const bookingList = document.getElementById('bookingList');
+document.getElementById("bookingForm")
+.addEventListener("submit", async e => {
 
-    // โหลดลูกค้าใส่ dropdown
-    function loadCustomers() {
-        fetch('/customers')
-            .then(res => res.json())
-            .then(data => {
-                customerSelect.innerHTML = '<option value="">Select Customer</option>';
-                data.forEach(customer => {
-                    const option = document.createElement('option');
-                    option.value = customer.id;
-                    option.textContent = customer.name;
-                    customerSelect.appendChild(option);
-                });
-            });
-    }
+e.preventDefault()
 
-    // โหลดรายการจอง
-    function loadBookings() {
-        fetch('/bookings')
-            .then(res => res.json())
-            .then(data => {
-                bookingList.innerHTML = '';
-                data.forEach(booking => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${booking.name}</td>
-                        <td>${booking.service}</td>
-                        <td>${booking.booking_date}</td>
-                    `;
-                    bookingList.appendChild(row);
-                });
-            });
-    }
+const form = new FormData(e.target)
 
-    // บันทึกการจอง
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
+const data = {
+service: form.get("service"),
+booking_date: form.get("booking_date")
+}
 
-        const customer_id = customerSelect.value;
-        const service = document.getElementById('service').value;
-        const booking_date = document.getElementById('bookingDate').value;
+const res = await fetch("/api/bookings",{
 
-        fetch('/bookings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ customer_id, service, booking_date })
-        })
-        .then(res => res.json())
-        .then(() => {
-            form.reset();
-            loadBookings();
-        });
-    });
+method:"POST",
 
-    loadCustomers();
-    loadBookings();
-});
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify(data)
+
+})
+
+alert(await res.text())
+
+})

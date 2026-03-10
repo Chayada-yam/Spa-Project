@@ -1,24 +1,127 @@
-<div class="navbar">
+const express=require("express")
+const mysql=require("mysql2")
+const bodyParser=require("body-parser")
+const path=require("path")
 
-<a href="dashboard.html">หน้าหลัก</a>
-<a href="booking.html">จองสปา</a>
-<a href="history.html">ประวัติ</a>
-<a href="login.html">ออกจากระบบ</a>
+const app=express()
 
-</div>
-<h2>เลือกวันเวลา</h2>
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(express.static("public"))
 
-<form action="/api/book" method="POST">
+const db=mysql.createConnection({
+host:"localhost",
+user:"root",
+password:"",
+database:"spa_db"
+})
 
-<select name="service">
+db.connect(err=>{
+if(err) throw err
+console.log("database connected")
+})
 
-<option>นวดไทย</option>
-<option>นวดน้ำมัน</option>
+app.get("/",(req,res)=>{
+res.sendFile(path.join(__dirname,"public/index.html"))
+})
 
-</select>
+app.post("/api/register",(req,res)=>{
 
-<input type="datetime-local" name="date">
+const{name,gender,phone,username,password}=req.body
 
-<button>ยืนยันการจอง</button>
+db.query(
+"INSERT INTO users(name,gender,phone,username,password,role) VALUES(?,?,?,?,?,'user')",
+[name,gender,phone,username,password],
+()=>{
 
-</form>
+res.redirect("/login.html")
+
+})
+
+})
+
+app.post("/api/login",(req,res)=>{
+
+const{username,password}=req.body
+
+db.query(
+"SELECT * FROM users WHERE username=? AND password=?",
+[username,password],
+(err,result)=>{
+
+if(result.length==0){
+
+return res.send("login fail")
+
+}
+
+if(result[0].role=="admin"){
+
+res.redirect("/admin.html")
+
+}else{
+
+res.redirect("/dashboard.html")
+
+}
+
+})
+
+})
+
+app.post("/api/book",(req,res)=>{
+
+const{service,time}=req.body
+
+db.query(
+"SELECT * FROM bookings WHERE service=? AND booking_time=?",
+[service,time],
+(err,result)=>{
+
+if(result.length>0){
+
+return res.send("เวลานี้ถูกจองแล้ว")
+
+}
+
+db.query(
+"INSERT INTO bookings(user_id,service,booking_time) VALUES(1,?,?)",
+[service,time],
+()=>{
+
+res.redirect("/history.html")
+
+})
+
+})
+
+})
+
+app.get("/api/history",(req,res)=>{
+
+db.query(
+"SELECT * FROM bookings",
+(err,result)=>{
+
+res.json(result)
+
+})
+
+})
+
+app.get("/api/users",(req,res)=>{
+
+db.query(
+"SELECT id,name,phone FROM users",
+(err,result)=>{
+
+res.json(result)
+
+})
+
+})
+
+app.listen(3000,()=>{
+
+console.log("server running http://localhost:3000")
+
+})

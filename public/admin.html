@@ -1,0 +1,32 @@
+<h2>สมัครสมาชิก</h2>
+
+<form action="/api/register" method="POST">
+
+<label>ชื่อ-นามสกุล</label>
+<input name="fullname" required>
+
+<label>เบอร์โทร</label>
+<input name="phone" required>
+
+<label>ที่อยู่</label>
+<input name="address" required>
+
+<label>ชื่อผู้ใช้</label>
+<input name="username" required>
+
+<label>รหัสผ่าน</label>
+<input type="password" name="password" required>
+
+<label>ประเภทผู้ใช้</label>
+<select name="role">
+
+<option value="user">ผู้ใช้บริการ</option>
+<option value="admin">แอดมิน</option>
+
+</select>
+
+<button type="submit">สมัครสมาชิก</button>
+
+</form>
+
+<a href="/login.html">ไปหน้า Login</a>

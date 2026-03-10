@@ -4,14 +4,13 @@
 
 <h2>สมัครสมาชิก</h2>
 
-<form action="/api/register" method="POST">
+<form action="/register" method="POST" onsubmit="return checkPassword()">
 
 <input name="name" placeholder="ชื่อ">
 
 <select name="gender">
 
 <option>ชาย</option>
-
 <option>หญิง</option>
 
 </select>
@@ -20,10 +19,16 @@
 
 <input name="username" placeholder="username">
 
-<input name="password" type="password" placeholder="password">
+<input id="pass" type="password" name="password" placeholder="รหัสผ่าน 6 ตัว">
+
+<input id="confirm" type="password" placeholder="ยืนยันรหัสผ่าน">
+
+<small>กรอกรหัส 6 ตัว ตัวเลขเท่านั้น</small>
 
 <button>สมัครสมาชิก</button>
 
 </form>
 
 </div>
+
+<script src="js/register.js"></script>

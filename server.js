@@ -1,103 +1,167 @@
-require("dotenv").config();
+require("dotenv").config()
 
-const express = require("express");
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const mysql = require("mysql2");
+const express = require("express")
+const mysql = require("mysql2")
+const session = require("express-session")
+const bcrypt = require("bcrypt")
 
-const app = express();
+const app = express()
 
-// ================= DATABASE =================
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static("public"))
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+)
+
+/* ================= DATABASE ================= */
+
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306
-});
+  port: process.env.DB_PORT,
+})
 
 db.connect(err => {
   if (err) {
-    console.error("Database connection failed:", err);
-    return;
+    console.log("DB ERROR", err)
+  } else {
+    console.log("MySQL Connected")
   }
-  console.log("MySQL Connected");
-});
+})
 
-// ================= MIDDLEWARE =================
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+/* ================= AUTH MIDDLEWARE ================= */
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || "secretkey",
-  resave: false,
-  saveUninitialized: false
-}));
-
-// ================= AUTH MIDDLEWARE =================
-function isLoggedIn(req, res, next) {
-  if (req.session.user) return next();
-  res.redirect("/login");
+function auth(req, res, next) {
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized")
+  }
+  next()
 }
 
-function isAdmin(req, res, next) {
-  if (req.session.user && req.session.user.role === "admin") return next();
-  res.status(403).send("Access denied");
+function adminOnly(req, res, next) {
+  if (req.session.user.role !== "admin") {
+    return res.status(403).send("Forbidden")
+  }
+  next()
 }
 
-// ================= ROUTES =================
-app.get("/", (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
+/* ================= REGISTER ================= */
 
-  if (req.session.user.role === "admin") {
-    return res.redirect("/admin");
-  }
+app.post("/api/register", async (req, res) => {
+  const { username, password } = req.body
 
-  res.sendFile(__dirname + "/public/index.html");
-});
+  const hash = await bcrypt.hash(password, 10)
 
-app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/public/login.html");
-});
+  db.query(
+    "INSERT INTO users (username,password,role) VALUES (?,?,'user')",
+    [username, hash],
+    err => {
+      if (err) return res.send(err)
 
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-
-  const sql = "SELECT * FROM users WHERE username = ?";
-  db.query(sql, [username], (err, results) => {
-    if (err) return res.send("Database error");
-
-    if (results.length === 0) {
-      return res.send("User not found");
+      res.send("Register success")
     }
+  )
+})
 
-    const user = results[0];
+/* ================= LOGIN ================= */
 
-    if (password === user.password) {
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body
+
+  db.query(
+    "SELECT * FROM users WHERE username=?",
+    [username],
+    async (err, results) => {
+
+      if (results.length === 0)
+        return res.send("User not found")
+
+      const user = results[0]
+
+      const match = await bcrypt.compare(password, user.password)
+
+      if (!match)
+        return res.send("Wrong password")
+
       req.session.user = {
         id: user.id,
+        username: user.username,
         role: user.role
-      };
+      }
 
-      return user.role === "admin"
-        ? res.redirect("/admin")
-        : res.redirect("/");
+      res.redirect("/dashboard.html")
     }
+  )
+})
 
-    res.send("Wrong password");
-  });
-});
+/* ================= LOGOUT ================= */
 
 app.get("/logout", (req, res) => {
-  req.session.destroy(() => res.redirect("/login"));
-});
+  req.session.destroy()
+  res.redirect("/login.html")
+})
 
-app.get("/admin", isLoggedIn, isAdmin, (req, res) => {
-  res.sendFile(__dirname + "/public/dashboard.html");
-});
+/* ================= BOOK SPA ================= */
 
-// ================= SERVER =================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.post("/api/bookings", auth, (req, res) => {
+
+  const { service, booking_date } = req.body
+
+  const user_id = req.session.user.id
+
+  db.query(
+    "INSERT INTO bookings (user_id,service,booking_date) VALUES (?,?,?)",
+    [user_id, service, booking_date],
+    err => {
+
+      if (err) return res.send(err)
+
+      res.send("Booking success")
+    }
+  )
+})
+
+/* ================= USER BOOKINGS ================= */
+
+app.get("/api/bookings", auth, (req, res) => {
+
+  const user_id = req.session.user.id
+
+  db.query(
+    "SELECT * FROM bookings WHERE user_id=?",
+    [user_id],
+    (err, results) => {
+
+      res.json(results)
+
+    }
+  )
+})
+
+/* ================= ADMIN BOOKINGS ================= */
+
+app.get("/api/admin/bookings", auth, adminOnly, (req, res) => {
+
+  db.query(
+    "SELECT * FROM bookings",
+    (err, results) => {
+
+      res.json(results)
+
+    }
+  )
+})
+
+/* ================= SERVER ================= */
+
+app.listen(3000, () => {
+  console.log("Server running on port 3000")
+})

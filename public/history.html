@@ -1,0 +1,30 @@
+<h2>ประวัติการจอง</h2>
+
+<button onclick="loadBookings()">โหลดข้อมูล</button>
+
+<ul id="list"></ul>
+
+<script>
+
+async function loadBookings(){
+
+const res = await fetch("/api/bookings")
+const data = await res.json()
+
+const list = document.getElementById("list")
+
+list.innerHTML=""
+
+data.forEach(b => {
+
+const li = document.createElement("li")
+
+li.innerText = b.service + " | " + b.booking_date
+
+list.appendChild(li)
+
+})
+
+}
+
+</script>

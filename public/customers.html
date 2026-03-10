@@ -1,0 +1,30 @@
+<h2>ลูกค้าทั้งหมด</h2>
+
+<button onclick="loadCustomers()">โหลดข้อมูล</button>
+
+<ul id="customers"></ul>
+
+<script>
+
+async function loadCustomers(){
+
+const res = await fetch("/api/admin/bookings")
+const data = await res.json()
+
+const list = document.getElementById("customers")
+
+list.innerHTML=""
+
+data.forEach(c => {
+
+const li = document.createElement("li")
+
+li.innerText = c.user_id + " - " + c.service + " - " + c.booking_date
+
+list.appendChild(li)
+
+})
+
+}
+
+</script>

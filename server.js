@@ -7,6 +7,8 @@ const bcrypt = require("bcrypt")
 
 const app = express()
 
+/* ================= MIDDLEWARE ================= */
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"))
@@ -37,7 +39,7 @@ db.connect(err => {
   }
 })
 
-/* ================= AUTH MIDDLEWARE ================= */
+/* ================= AUTH ================= */
 
 function auth(req, res, next) {
   if (!req.session.user) {
@@ -47,7 +49,7 @@ function auth(req, res, next) {
 }
 
 function adminOnly(req, res, next) {
-  if (req.session.user.role !== "admin") {
+  if (!req.session.user || req.session.user.role !== "admin") {
     return res.status(403).send("Forbidden")
   }
   next()
@@ -56,17 +58,22 @@ function adminOnly(req, res, next) {
 /* ================= REGISTER ================= */
 
 app.post("/api/register", async (req, res) => {
-  const { username, password } = req.body
+
+  const { username, password, role } = req.body
 
   const hash = await bcrypt.hash(password, 10)
 
   db.query(
-    "INSERT INTO users (username,password,role) VALUES (?,?,'user')",
-    [username, hash],
+    "INSERT INTO users (username,password,role) VALUES (?,?,?)",
+    [username, hash, role],
     err => {
-      if (err) return res.send(err)
 
-      res.send("Register success")
+      if (err) {
+        console.log(err)
+        return res.send("Register error")
+      }
+
+      res.redirect("/login.html")
     }
   )
 })
@@ -74,12 +81,15 @@ app.post("/api/register", async (req, res) => {
 /* ================= LOGIN ================= */
 
 app.post("/api/login", (req, res) => {
+
   const { username, password } = req.body
 
   db.query(
     "SELECT * FROM users WHERE username=?",
     [username],
     async (err, results) => {
+
+      if (err) return res.send(err)
 
       if (results.length === 0)
         return res.send("User not found")
@@ -97,7 +107,12 @@ app.post("/api/login", (req, res) => {
         role: user.role
       }
 
-      res.redirect("/dashboard.html")
+      if (user.role === "admin") {
+        res.redirect("/admin.html")
+      } else {
+        res.redirect("/dashboard.html")
+      }
+
     }
   )
 })
@@ -105,8 +120,11 @@ app.post("/api/login", (req, res) => {
 /* ================= LOGOUT ================= */
 
 app.get("/logout", (req, res) => {
-  req.session.destroy()
-  res.redirect("/login.html")
+
+  req.session.destroy(() => {
+    res.redirect("/login.html")
+  })
+
 })
 
 /* ================= BOOK SPA ================= */
@@ -127,6 +145,7 @@ app.post("/api/bookings", auth, (req, res) => {
       res.send("Booking success")
     }
   )
+
 })
 
 /* ================= USER BOOKINGS ================= */
@@ -140,10 +159,13 @@ app.get("/api/bookings", auth, (req, res) => {
     [user_id],
     (err, results) => {
 
+      if (err) return res.send(err)
+
       res.json(results)
 
     }
   )
+
 })
 
 /* ================= ADMIN BOOKINGS ================= */
@@ -154,10 +176,13 @@ app.get("/api/admin/bookings", auth, adminOnly, (req, res) => {
     "SELECT * FROM bookings",
     (err, results) => {
 
+      if (err) return res.send(err)
+
       res.json(results)
 
     }
   )
+
 })
 
 /* ================= SERVER ================= */

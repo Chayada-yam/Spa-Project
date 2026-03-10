@@ -1,30 +1,38 @@
+<div class="navbar">
+
+<a href="dashboard.html">หน้าหลัก</a>
+<a href="booking.html">จองสปา</a>
+<a href="history.html">ประวัติ</a>
+<a href="login.html">ออกจากระบบ</a>
+
+</div>
 <h2>ประวัติการจอง</h2>
 
-<button onclick="loadBookings()">โหลดข้อมูล</button>
-
-<ul id="list"></ul>
+<table class="table" id="historyTable"></table>
 
 <script>
 
-async function loadBookings(){
+fetch("/api/history")
 
-const res = await fetch("/api/bookings")
-const data = await res.json()
+.then(res=>res.json())
 
-const list = document.getElementById("list")
+.then(data=>{
 
-list.innerHTML=""
+let html="<tr><th>Service</th><th>Date</th></tr>"
 
-data.forEach(b => {
+data.forEach(b=>{
 
-const li = document.createElement("li")
-
-li.innerText = b.service + " | " + b.booking_date
-
-list.appendChild(li)
+html+=`
+<tr>
+<td>${b.service}</td>
+<td>${b.booking_date}</td>
+</tr>
+`
 
 })
 
-}
+document.getElementById("historyTable").innerHTML=html
+
+})
 
 </script>

@@ -1,7 +1,7 @@
 body{
-margin:0;
 font-family:Arial;
-background:#f4f6fb;
+background:#f4f7ff;
+margin:0;
 }
 
 .navbar{
@@ -14,7 +14,7 @@ color:white;
 
 .navbar a{
 color:white;
-margin-left:15px;
+margin-left:20px;
 text-decoration:none;
 }
 
@@ -23,13 +23,35 @@ text-decoration:underline;
 }
 
 .card{
-width:350px;
+width:380px;
+background:white;
 margin:auto;
 margin-top:80px;
 padding:30px;
-background:white;
 border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
+box-shadow:0 6px 20px rgba(0,0,0,0.2);
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+background:#3a6df0;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#2c56c9;
 }
 
 .grid{
@@ -44,24 +66,9 @@ background:white;
 padding:20px;
 text-align:center;
 border-radius:10px;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
+box-shadow:0 3px 15px rgba(0,0,0,0.1);
 }
 
 .service img{
 width:80px;
-}
-
-button{
-background:#3a6df0;
-color:white;
-border:none;
-padding:10px;
-border-radius:5px;
-width:100%;
-}
-
-input,select{
-width:100%;
-padding:10px;
-margin:10px 0;
 }

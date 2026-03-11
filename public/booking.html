@@ -1,24 +1,34 @@
-<link rel="stylesheet" href="/css/style.css">
+<!DOCTYPE html>
+<html>
 
-<div class="form-box">
+<head>
 
-<h2>จองบริการ</h2>
+<link rel="stylesheet" href="css/style.css">
 
-<form action="/api/book" method="POST">
+</head>
 
-<select name="service">
+<body>
 
-<option>นวดไทย</option>
-<option>สปาหน้า</option>
-<option>นวดเท้า</option>
-<option>ขัดผิว</option>
+<div class="container">
+
+<h2>Book Service</h2>
+
+<select id="service">
+
+<option value="1">Thai Massage</option>
+<option value="2">Facial Spa</option>
+<option value="3">Body Scrub</option>
+<option value="4">Foot Massage</option>
 
 </select>
 
-<input type="datetime-local" name="time">
+<input type="datetime-local" id="time">
 
-<button class="btn">จอง</button>
-
-</form>
+<button onclick="book()">Book</button>
 
 </div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>

@@ -1,19 +1,41 @@
-<link rel="stylesheet" href="/css/style.css">
+<!DOCTYPE html>
+<html>
 
-<div class="form-box">
+<head>
+
+<meta charset="UTF-8">
+<title>สมัครสมาชิก</title>
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="login-box">
 
 <h2>สมัครสมาชิก</h2>
 
-<form action="/api/register" method="POST">
+<input id="name" placeholder="ชื่อ">
 
-<input name="name" placeholder="ชื่อ">
+<input id="username" placeholder="ชื่อผู้ใช้">
 
-<input name="username" placeholder="Username">
+<input id="password" type="password" placeholder="รหัสผ่าน">
 
-<input type="password" name="password" placeholder="Password">
+<p class="hint">
+ต้องมีอักษรพิมพ์ใหญ่ 1 ตัว(รวม 8 ตัว)
+</p>
 
-<button class="btn">สมัครสมาชิก</button>
+<input id="confirm" type="password" placeholder="ยืนยันรหัสผ่าน">
 
-</form>
+<p id="error" class="error"></p>
+
+<button onclick="register()">สมัครสมาชิก</button>
+
+<a href="login.html">กลับไปหน้าเข้าสู่ระบบ</a>
 
 </div>
+
+<script src="js/register.js"></script>
+
+</body>
+</html>

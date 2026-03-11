@@ -1,25 +1,35 @@
-<link rel="stylesheet" href="/css/style.css">
+<!DOCTYPE html>
+<html>
 
-<div class="form-box">
+<head>
 
-<h2>เข้าสู่ระบบ</h2>
+<meta charset="UTF-8">
 
-<form action="/api/login" method="POST">
+<title>เข้าสู่ระบบ</title>
 
-<input name="username" placeholder="Username">
+<link rel="stylesheet" href="css/style.css">
 
-<input type="password" name="password" placeholder="Password">
+</head>
 
-<button class="btn">Login</button>
+<body>
 
-</form>
+<div class="login-box">
 
-<br>
+<h2>เข้าสู่ระบบสปา</h2>
+
+<input id="username" placeholder="ชื่อผู้ใช้">
+
+<input id="password" type="password" placeholder="รหัสผ่าน">
+
+<p id="error" class="error"></p>
+
+<button onclick="login()">เข้าสู่ระบบ</button>
 
 <a href="register.html">สมัครสมาชิก</a>
 
-<br><br>
-
-<a href="admin.html">Admin</a>
-
 </div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>

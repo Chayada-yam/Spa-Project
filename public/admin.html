@@ -1,27 +1,37 @@
-<link rel="stylesheet" href="style.css">
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>ผู้ดูแลระบบ</title>
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
 
 <div class="container">
 
-<h2>ประวัติการจอง</h2>
+<h1>ระบบผู้ดูแลสปา</h1>
 
-<ul id="list"></ul>
+<h3>เพิ่มบริการ</h3>
+
+<input id="serviceName" placeholder="ชื่อบริการ">
+
+<input id="price" placeholder="ราคา">
+
+<button onclick="addService()">เพิ่มบริการ</button>
+
+<h3>รายการบริการ</h3>
+
+<div id="serviceList"></div>
+
+<button onclick="logout()">ออกจากระบบ</button>
 
 </div>
 
-<script>
+<script src="js/admin.js"></script>
 
-fetch("/api/history")
-.then(r=>r.json())
-.then(data=>{
-
-let html=""
-
-data.forEach(b=>{
-html+=`<li>${b.service} - ${b.booking_time} - ${b.status}</li>`
-})
-
-document.getElementById("list").innerHTML=html
-
-})
-
-</script>
+</body>
+</html>

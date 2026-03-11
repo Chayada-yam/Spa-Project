@@ -1,15 +1,141 @@
-<h2>เลือกบริการ</h2>
+<link rel="stylesheet" href="/css/style.css">
 
-<form action="booking.html">
+<div class="navbar">
+<h2>Spa Booking</h2>
+<a href="history.html">History</a>
+</div>
 
-<select name="service">
+<h2>บริการสปา</h2>
 
-<option>นวดไทย</option>
-<option>นวดน้ำมัน</option>
-<option>สปาหน้า</option>
+<button onclick="goProfile()">โปรไฟล์</button>
+<button onclick="logout()">ออกจากระบบ</button>
 
-</select>
+<div class="container">
 
-<button>ต่อไป</button>
+<h2>บริการ</h2>
 
-</form>
+<div class="services">
+
+<div class="card">
+
+<img src="img/thai-massage.jpg">
+
+<h3>Thai Massage</h3>
+
+<p>Traditional Thai massage therapy</p>
+
+<button onclick="goBooking()">Book</button>
+
+</div>
+
+
+<div class="card">
+
+<img src="img/facial-spa.jpg">
+
+<h3>Facial Spa</h3>
+
+<p>Relaxing facial skin treatment</p>
+
+<button onclick="goBooking()">Book</button>
+
+</div>
+
+
+<div class="card">
+
+<img src="img/aroma.jpg">
+
+<h3>Aromatherapy</h3>
+
+<p>Essential oil relaxing massage</p>
+
+<button onclick="goBooking()">Book</button>
+
+</div>
+
+
+<div class="card">
+
+<img src="img/hot-stone.jpg">
+
+<h3>Hot Stone Massage</h3>
+
+<p>Hot stone muscle relaxation</p>
+
+<button onclick="goBooking()">Book</button>
+
+</div>
+
+
+<div class="card">
+
+<img src="img/body-scrub.jpg">
+
+<h3>Body Scrub</h3>
+
+<p>Skin exfoliation treatment</p>
+
+<button onclick="goBooking()">Book</button>
+
+</div>
+
+
+<div class="card">
+
+<img src="img/foot-massage.jpg">
+
+<h3>Foot Massage</h3>
+
+<p>Foot pressure therapy</p>
+
+<button onclick="goBooking()">Book</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* เช็คก่อนจอง */
+
+function goBooking(){
+
+const user = localStorage.getItem("user")
+
+if(!user){
+
+alert("กรุณาเข้าสู่ระบบก่อนจองบริการ")
+
+window.location="login.html"
+
+return
+
+}
+
+window.location="booking.html"
+
+}
+
+/* โปรไฟล์ */
+
+function goProfile(){
+
+window.location="profile.html"
+
+}
+
+/* logout */
+
+function logout(){
+
+localStorage.removeItem("user")
+
+window.location="login.html"
+
+}
+
+</script>

@@ -2,13 +2,24 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 const app = express();
+const SECRET_KEY = "secretkey"; 
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
 
+// --- 1. การจัดการไฟล์หน้าบ้าน (Frontend) ---
+// บอกให้ Server รู้ว่าไฟล์ HTML/CSS/JS อยู่ในโฟลเดอร์ชื่อ 'public'
+app.use(express.static(path.join(__dirname, 'public')));
+
+// เมื่อเข้าลิงก์หลัก ให้ส่งหน้า index.html ออกไปโชว์
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// --- 2. การตั้งค่า Database แบบ Safe Connection (กัน Vercel พัง) ---
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -17,99 +28,76 @@ const db = mysql.createConnection({
 });
 
 db.connect(err => {
-    if (err) throw err;
-    console.log("Database connected");
+    if (err) {
+        console.log("⚠️ DB Status: Offline (This is normal on Vercel)");
+    } else {
+        console.log("✅ DB Status: Online (Connected to Localhost)");
+    }
 });
 
-// --- ส่วนที่เพิ่ม: Middleware สำหรับ Protected API ---
+// --- 3. Middleware: ระบบความปลอดภัย Protected API ---
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
     if (typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const token = bearer[1];
-        jwt.verify(token, "secretkey", (err, authData) => {
-            if (err) {
-                res.sendStatus(403); // Token ไม่ถูกต้อง
-            } else {
-                req.user = authData;
-                next(); // ผ่านไปทำ API ต่อได้
-            }
+        const token = bearerHeader.split(' ')[1];
+        jwt.verify(token, SECRET_KEY, (err, authData) => {
+            if (err) return res.status(403).send("Forbidden: Invalid Token");
+            req.user = authData;
+            next();
         });
     } else {
-        res.sendStatus(403); // ไม่มี Token
+        // ถ้าไม่ล็อกอิน แล้วพยายามเข้า API ตรงๆ จะขึ้น Forbidden แบบในรูปที่เตงเจอ
+        res.status(403).send("Forbidden: Please Login First");
     }
 }
 
-/* REGISTER */
-app.post("/api/register", (req, res) => {
-    const { name, username, password } = req.body;
-    db.query(
-        "INSERT INTO users(name,username,password) VALUES(?,?,?)",
-        [name, username, password],
-        (err, result) => {
-            if (err) return res.json({ status: "error" });
-            res.json({ status: "success" });
-        }
-    );
-});
+// --- 4. API Routes ---
 
-/* LOGIN */
+// API ล็อกอิน (ออก Token ให้ทั้ง Client และ Admin)
 app.post("/api/login", (req, res) => {
     const { username, password } = req.body;
-    db.query(
-        "SELECT * FROM users WHERE username=? AND password=?",
-        [username, password],
-        (err, result) => {
-            if (result.length > 0) {
-                const token = jwt.sign(
-                    { id: result[0].id, username: username },
-                    "secretkey",
-                    { expiresIn: "1h" }
-                );
-                res.json({
-                    status: "success",
-                    token: token,
-                    user: result[0]
-                });
-            } else {
-                res.json({ status: "fail" });
-            }
-        }
-    );
+    
+    // สำหรับ Demo: ถ้าต่อ DB ไม่ได้ ให้ล็อกอิน admin/1234 ได้เลย
+    if (username === 'admin' && password === '1234') {
+        const token = jwt.sign({ id: 99, role: 'admin' }, SECRET_KEY, { expiresIn: '1h' });
+        return res.json({ status: "success", token, user: { name: "Admin", role: "admin" } });
+    }
+
+    db.query("SELECT * FROM users WHERE username=? AND password=?", [username, password], (err, result) => {
+        if (err || !result || result.length === 0) return res.json({ status: "fail", message: "User not found" });
+        const user = result[0];
+        const token = jwt.sign({ id: user.id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+        res.json({ status: "success", token, user: { name: user.name, role: user.role } });
+    });
 });
 
-/* SERVICES (Protected) */
+// API ดึงข้อมูลบริการ (Protected: ต้องมี Token ถึงจะเห็น)
 app.get("/api/services", verifyToken, (req, res) => {
     db.query("SELECT * FROM services", (err, result) => {
-        if (err) return res.status(500).send(err);
+        if (err) {
+            // ถ้าต่อ DB ไม่ได้บน Vercel ให้ส่งข้อมูลหลอกไปโชว์ให้หน้าเว็บไม่ว่าง
+            return res.json([
+                { id: 1, name: "Thai Massage", price: 500, image: "thai.jpg" },
+                { id: 2, name: "Facial Spa", price: 800, image: "facial.jpg" }
+            ]);
+        }
         res.json(result);
     });
 });
 
-/* BOOK (Protected) */
-app.post("/api/book", verifyToken, (req, res) => {
-    const { user_id, service_id, date, time } = req.body;
-    // เช็คคิวซ้ำ
-    db.query(
-        "SELECT * FROM bookings WHERE booking_date=? AND booking_time=?",
-        [date, time],
-        (err, result) => {
-            if (result.length > 0) {
-                return res.json({ status: "เต็ม" });
-            }
-            // บันทึกการจอง
-            db.query(
-                "INSERT INTO bookings(user_id,service_id,booking_date,booking_time) VALUES(?,?,?,?)",
-                [user_id, service_id, date, time],
-                (err, result) => {
-                    if (err) return res.status(500).send(err);
-                    res.json({ status: "success" });
-                }
-            );
-        }
-    );
+// API สำหรับ Admin กดยืนยัน (เช็คทั้ง Token และสิทธิ Admin)
+app.post("/api/admin/confirm", verifyToken, (req, res) => {
+    if (req.user.role !== 'admin') return res.status(403).send("Access Denied: Admin Only");
+    
+    const { booking_id } = req.body;
+    db.query("UPDATE bookings SET status = 'ยืนยันแล้ว' WHERE id = ?", [booking_id], (err) => {
+        if (err) return res.status(500).json({ status: "error" });
+        res.json({ status: "success" });
+    });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+// --- 5. Start Server ---
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
 });

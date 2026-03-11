@@ -79,7 +79,8 @@ db.query(
 
 if(result.length>0){
 
-const token = jwt.sign(
+if(result.length > 0){
+    const token = jwt.sign(
 { id: result[0].id },
 "secretkey",
 { expiresIn: "1h" }
@@ -97,11 +98,8 @@ user: result[0]
 
 res.json({status:"fail"})
 
-}
-
 })
 
-})
 
 /* SERVICES */
 
@@ -116,6 +114,7 @@ res.json(result)
 })
 
 /* BOOK */
+})
 
 app.post("/api/book", verifyToken ,(req,res)=>{
 

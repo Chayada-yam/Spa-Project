@@ -1,15 +1,38 @@
-let stars=document.querySelectorAll(".star")
+function login(){
 
-stars.forEach((s,i)=>{
+const username=document.getElementById("username").value
+const password=document.getElementById("password").value
 
-s.addEventListener("click",()=>{
+fetch("/api/login",{
 
-stars.forEach(st=>st.classList.remove("active"))
+method:"POST",
 
-for(let j=0;j<=i;j++){
-stars[j].classList.add("active")
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({username,password})
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status==="success"){
+
+localStorage.setItem("user",JSON.stringify(data.user))
+
+if(data.user.role==="admin"){
+window.location="admin.html"
+}else{
+window.location="services.html"
+}
+
+}else{
+
+alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+
 }
 
 })
 
-})
+}

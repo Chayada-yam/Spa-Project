@@ -19,6 +19,14 @@ body{
     border-radius:10px;
     box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
+
+/* แก้ไขจุดนี้ครับ: ทำให้หัวข้อ h2 อยู่ตรงกลาง */
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
 input{
     width:100%;
     padding:10px;
@@ -50,9 +58,7 @@ button:hover {
 <body>
 
 <div class="box">
-    <h2>เข้าสู่ระบบ</h2>
-
-    <input type="text" id="username" placeholder="Username">
+    <h2>เข้าสู่ระบบ</h2> <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
 
     <button onclick="login()">เข้าสู่ระบบทั่วไป</button>
@@ -62,33 +68,27 @@ button:hover {
 </div>
 
 <script>
-// ฟังก์ชันสำหรับเข้าสู่ระบบแอดมิน
 function goAdmin(){
     const user = document.getElementById("username").value;
     const pass = document.getElementById("password").value;
 
-    // เช็ครหัสแอดมิน (admin / 1234)
     if (user === "admin" && pass === "1234") {
-        // *** บรรทัดนี้สำคัญมาก! คือการมอบกุญแจให้แอดมิน ***
         localStorage.setItem("isAdminLoggedIn", "true");
-        
         alert("เข้าสู่ระบบแอดมินสำเร็จ!");
-        window.location.href = "admin.html"; // ไปยังหน้าแอดมิน
+        window.location.href = "admin.html";
     } else {
         alert("Username หรือ Password สำหรับแอดมินไม่ถูกต้อง!");
     }
 }
 
-// ฟังก์ชันสำหรับผู้ใช้ทั่วไป
 function login(){
     const user = document.getElementById("username").value;
     const pass = document.getElementById("password").value;
     
     if (user !== "" && pass !== "") {
-        // จำชื่อผู้ใช้ทั่วไป
         localStorage.setItem("user", user);
         alert("เข้าสู่ระบบสำเร็จ");
-        window.location.href = "services.html"; // เปลี่ยนไปหน้าบริการของผู้ใช้
+        window.location.href = "services.html";
     } else {
         alert("กรุณากรอกข้อมูลให้ครบถ้วน");
     }

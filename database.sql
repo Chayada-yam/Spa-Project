@@ -1,0 +1,26 @@
+CREATE DATABASE IF NOT EXISTS spa_db;
+USE spa_db;
+
+CREATE TABLE users(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100),
+username VARCHAR(50),
+password VARCHAR(50),
+role VARCHAR(10) DEFAULT 'user'
+);
+
+CREATE TABLE bookings(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id INT,
+service VARCHAR(100),
+time DATETIME,
+status VARCHAR(20) DEFAULT 'pending'
+);
+
+CREATE TABLE reviews(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id INT,
+service VARCHAR(100),
+rating INT,
+comment TEXT
+);

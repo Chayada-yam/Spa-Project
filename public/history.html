@@ -1,37 +1,26 @@
-<div class="navbar">
+<link rel="stylesheet" href="style.css">
 
-<a href="dashboard.html">หน้าหลัก</a>
-<a href="booking.html">จองสปา</a>
-<a href="history.html">ประวัติ</a>
-<a href="login.html">ออกจากระบบ</a>
+<div class="container">
 
-</div>
 <h2>ประวัติการจอง</h2>
 
-<table class="table" id="historyTable"></table>
+<ul id="list"></ul>
+
+</div>
 
 <script>
 
 fetch("/api/history")
-
-.then(res=>res.json())
-
+.then(r=>r.json())
 .then(data=>{
 
-let html="<tr><th>Service</th><th>Date</th></tr>"
+let html=""
 
 data.forEach(b=>{
-
-html+=`
-<tr>
-<td>${b.service}</td>
-<td>${b.booking_date}</td>
-</tr>
-`
-
+html+=`<li>${b.service} - ${b.booking_time} - ${b.status}</li>`
 })
 
-document.getElementById("historyTable").innerHTML=html
+document.getElementById("list").innerHTML=html
 
 })
 

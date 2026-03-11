@@ -1,55 +1,26 @@
-<h2>Admin Dashboard</h2>
+<link rel="stylesheet" href="style.css">
 
-<h3>ลูกค้า</h3>
+<div class="container">
 
-<table class="table" id="users"></table>
+<h2>ประวัติการจอง</h2>
 
-<h3>การจอง</h3>
+<ul id="list"></ul>
 
-<table class="table" id="bookings"></table>
+</div>
 
 <script>
 
-fetch("/api/users")
-.then(res=>res.json())
-.then(data=>{
-
-let html="<tr><th>ID</th><th>Name</th><th>Phone</th></tr>"
-
-data.forEach(u=>{
-
-html+=`
-<tr>
-<td>${u.id}</td>
-<td>${u.name}</td>
-<td>${u.phone}</td>
-</tr>
-`
-
-})
-
-document.getElementById("users").innerHTML=html
-
-})
-
 fetch("/api/history")
-.then(res=>res.json())
+.then(r=>r.json())
 .then(data=>{
 
-let html="<tr><th>Service</th><th>Date</th></tr>"
+let html=""
 
 data.forEach(b=>{
-
-html+=`
-<tr>
-<td>${b.service}</td>
-<td>${b.booking_date}</td>
-</tr>
-`
-
+html+=`<li>${b.service} - ${b.booking_time} - ${b.status}</li>`
 })
 
-document.getElementById("bookings").innerHTML=html
+document.getElementById("list").innerHTML=html
 
 })
 

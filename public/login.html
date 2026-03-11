@@ -1,19 +1,39 @@
-<link rel="stylesheet" href="css/style.css">
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#a8edea,#fed6e3);
+margin:0;
+}
 
-<div class="card">
+.container{
+width:400px;
+margin:auto;
+margin-top:80px;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 0 15px rgba(0,0,0,0.2);
+}
 
-<h2>เข้าสู่ระบบ</h2>
+input,select{
+width:100%;
+padding:10px;
+margin:10px 0;
+}
 
-<form action="/api/login" method="POST">
+button{
+background:#007BFF;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+cursor:pointer;
+}
 
-<input name="username" placeholder="username">
+button:hover{
+background:#0056b3;
+}
 
-<input type="password" name="password" placeholder="password">
-
-<button>เข้าสู่ระบบ</button>
-
-</form>
-
-<a href="register.html">สมัครสมาชิก</a>
-
-</div>
+a{
+color:blue;
+text-decoration:underline;
+}

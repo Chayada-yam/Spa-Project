@@ -67,7 +67,7 @@ app.post("/api/book",(req,res)=>{
 const {service,time}=req.body
 
 db.query(
-"SELECT * FROM bookings WHERE service=? AND booking_time=?",
+"SELECT * FROM bookings WHERE service=? AND time=?",
 [service,time],
 (err,result)=>{
 
@@ -76,7 +76,7 @@ return res.send("เวลานี้ถูกจองแล้ว")
 }
 
 db.query(
-"INSERT INTO bookings(service,booking_time,user_id) VALUES(?,?,1)",
+"INSERT INTO bookings(service,time,user_id) VALUES(?,?,1)",
 [service,time],
 ()=>{
 res.redirect("/history.html")
@@ -85,7 +85,6 @@ res.redirect("/history.html")
 })
 
 })
-
 app.get("/api/history",(req,res)=>{
 
 db.query(

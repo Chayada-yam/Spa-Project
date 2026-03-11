@@ -1,26 +1,46 @@
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/css/style.css">
 
 <div class="container">
 
 <h2>ประวัติการจอง</h2>
 
-<ul id="list"></ul>
+<table class="table">
+
+<thead>
+<tr>
+<th>บริการ</th>
+<th>เวลา</th>
+<th>สถานะ</th>
+</tr>
+</thead>
+
+<tbody id="data"></tbody>
+
+</table>
 
 </div>
 
 <script>
 
 fetch("/api/history")
-.then(r=>r.json())
+.then(res=>res.json())
 .then(data=>{
 
 let html=""
 
 data.forEach(b=>{
-html+=`<li>${b.service} - ${b.booking_time} - ${b.status}</li>`
+
+html+=`
+<tr>
+<td>${b.service}</td>
+<td>${b.time}</td>
+<td>${b.status}</td>
+</tr>
+`
+
 })
 
-document.getElementById("list").innerHTML=html
+document.getElementById("data").innerHTML=html
 
 })
 

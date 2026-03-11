@@ -1,21 +1,15 @@
-document.addEventListener("DOMContentLoaded", () => {
+let stars=document.querySelectorAll(".star")
 
-const stars = document.querySelectorAll(".star")
+stars.forEach((s,i)=>{
 
-if(stars){
-stars.forEach((star,index)=>{
+s.addEventListener("click",()=>{
 
-star.addEventListener("click",()=>{
+stars.forEach(st=>st.classList.remove("active"))
 
-stars.forEach(s=>s.classList.remove("active"))
-
-for(let i=0;i<=index;i++){
-stars[i].classList.add("active")
+for(let j=0;j<=i;j++){
+stars[j].classList.add("active")
 }
 
 })
-
-})
-}
 
 })

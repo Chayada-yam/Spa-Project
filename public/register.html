@@ -1,43 +1,19 @@
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/css/style.css">
 
-<div class="container">
+<div class="form-box">
 
 <h2>สมัครสมาชิก</h2>
 
-<form action="/api/register" method="POST" onsubmit="return checkPass()">
+<form action="/api/register" method="POST">
 
 <input name="name" placeholder="ชื่อ">
 
-<input name="phone" placeholder="เบอร์">
+<input name="username" placeholder="Username">
 
-<input name="username" placeholder="username">
+<input type="password" name="password" placeholder="Password">
 
-<input type="password" id="p1" name="password" placeholder="รหัส 6 ตัว">
-
-<input type="password" id="p2" placeholder="ยืนยันรหัส">
-
-<p id="msg"></p>
-
-<button>สมัคร</button>
+<button class="btn">สมัครสมาชิก</button>
 
 </form>
 
 </div>
-
-<script>
-
-function checkPass(){
-
-let p1=document.getElementById("p1").value
-let p2=document.getElementById("p2").value
-
-if(p1!=p2){
-document.getElementById("msg").innerHTML="รหัสไม่ตรง"
-return false
-}
-
-return true
-
-}
-
-</script>

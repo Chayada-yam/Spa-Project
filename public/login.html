@@ -7,29 +7,30 @@
 
 <title>เข้าสู่ระบบ</title>
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="/css/style.css">
 
-</head>
+<div class="container">
 
-<body>
-
-<div class="login-box">
-
-<h2>เข้าสู่ระบบสปา</h2>
+<h2>เข้าสู่ระบบ</h2>
 
 <input id="username" placeholder="ชื่อผู้ใช้">
+<input type="password" id="password" placeholder="รหัสผ่าน">
 
-<input id="password" type="password" placeholder="รหัสผ่าน">
-
-<p id="error" class="error"></p>
+<p id="error"></p>
 
 <button onclick="login()">เข้าสู่ระบบ</button>
+
+<br><br>
+
+<button onclick="goAdmin()">เข้าสู่ระบบแอดมิน</button>
+
+<p>ยังไม่มีบัญชี?</p>
 
 <a href="register.html">สมัครสมาชิก</a>
 
 </div>
 
-<script src="js/script.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>

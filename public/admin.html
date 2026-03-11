@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html>
+<script>
 
+const user=JSON.parse(localStorage.getItem("user"))
+
+if(!user || user.role!=="admin"){
+
+alert("เฉพาะแอดมินเท่านั้น")
+window.location="login.html"
+
+}
+
+</script>
 <head>
 
 <meta charset="UTF-8">

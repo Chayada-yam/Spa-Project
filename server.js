@@ -1,6 +1,7 @@
 const express = require("express")
 const mysql = require("mysql2")
 const cors = require("cors")
+const jwt = require("jsonwebtoken")
 
 const app = express()
 
@@ -54,10 +55,21 @@ db.query(
 
 if(result.length>0){
 
+if(result.length>0){
+
+const token = jwt.sign(
+{ id: result[0].id },
+"secretkey",
+{ expiresIn: "1h" }
+)
+
 res.json({
 status:"success",
-user:result[0]
+token: token,
+user: result[0]
 })
+
+}
 
 }else{
 

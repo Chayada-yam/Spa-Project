@@ -5,131 +5,144 @@
 <title>Book Service</title>
 
 <style>
-
 body{
-font-family: Arial;
-background:#f5f5f5;
-padding:40px;
+    font-family: Arial, sans-serif;
+    background:#f5f5f5;
+    padding:40px;
 }
-
 .container{
-width:500px;
-margin:auto;
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+    width:500px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
-
-h2{
-text-align:center;
-}
-
+h2{ text-align:center; }
 .service-img{
-width:100%;
-border-radius:8px;
-margin-bottom:15px;
+    width:100%;
+    border-radius:8px;
+    margin-bottom:15px;
 }
-
-select{
-width:200px;
-padding:8px;
-margin-top:10px;
+select, input{
+    width:100%;
+    box-sizing: border-box;
+    padding:10px;
+    margin-top:10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
-
-input{
-width:220px;
-padding:8px;
-margin-top:10px;
-}
-
 button{
-padding:10px 20px;
-background:#8e44ad;
-color:white;
-border:none;
-border-radius:5px;
-margin-top:15px;
-cursor:pointer;
+    width: 100%;
+    padding:12px 20px;
+    background:#8e44ad;
+    color:white;
+    border:none;
+    border-radius:5px;
+    margin-top:20px;
+    cursor:pointer;
+    font-size: 16px;
 }
-
+button:hover { background: #732d91; }
 .back{
-margin-bottom:15px;
-display:inline-block;
-text-decoration:none;
-color:#333;
+    margin-bottom:15px;
+    display:inline-block;
+    text-decoration:none;
+    color:#333;
 }
-
 </style>
-
 </head>
 
 <body>
-
 <div class="container">
+    <a class="back" href="services.html">← กลับหน้าแรก</a>
+    <h2>Book Service</h2>
 
-<a class="back" href="services.html">← กลับหน้าแรก</a>
+    <img class="service-img" src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874" alt="massage">
 
-<h2>Book Service</h2>
+    <label>เลือกบริการ</label>
+    <br>
+    <select id="service">
+        <option value="">-- โหลดข้อมูลบริการ --</option>
+    </select>
 
-<img class="service-img" 
-src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874"
-alt="massage">
+    <br><br>
 
-<label>เลือกบริการ</label>
-<br>
+    <label>เลือกวันและเวลา</label>
+    <br>
+    <input type="datetime-local" id="datetime">
 
-<select id="service">
-<option>Thai Massage</option>
-<option>Aroma Massage</option>
-<option>Foot Massage</option>
-<option>Hot Stone Massage</option>
-<option>Facial Spa/option>
-<option>Aromatherapy</option>
-</select>
+    <br>
 
-<br><br>
-
-<label>เลือกวันและเวลา</label>
-<br>
-
-<input type="datetime-local" id="datetime">
-
-<br><br>
-
-<button onclick="book()">Book</button>
-
+    <button onclick="book()">ยืนยันการจอง</button>
 </div>
 
 <script>
+window.onload = function(){
+    // กำหนดบริการเริ่มต้น 6 รายการตามหน้าเว็บของคุณ
+    const defaultServices = [
+        "Thai Massage",
+        "Facial Spa",
+        "Aromatherapy",
+        "Hot Stone Massage",
+        "Body Scrub",
+        "Foot Massage"
+    ];
+
+    // ดึงข้อมูลบริการจากระบบ
+    let services = JSON.parse(localStorage.getItem("services"));
+    
+    // ถ้าเพิ่งเปิดครั้งแรกและยังไม่มีบริการเลย ให้ดึงชุดเริ่มต้นไปบันทึก
+    if(!services || services.length === 0) {
+        services = defaultServices;
+        localStorage.setItem("services", JSON.stringify(services));
+    }
+
+    const serviceSelect = document.getElementById("service");
+    serviceSelect.innerHTML = ""; // ล้างค่าเริ่มต้น
+
+    // นำบริการมาใส่ใน Dropdown
+    services.forEach(s => {
+        let option = document.createElement("option");
+        option.value = s;
+        option.text = s;
+        serviceSelect.appendChild(option);
+    });
+
+    // ถ้ากดปุ่ม Book มาจากหน้าการ์ดบริการ ให้เลือกบริการนั้นอัตโนมัติ
+    const selectedService = localStorage.getItem("selectedService");
+    if(selectedService) {
+        serviceSelect.value = selectedService;
+    }
+}
 
 function book(){
+    const service = document.getElementById("service").value;
+    const datetime = document.getElementById("datetime").value;
 
-const service=document.getElementById("service").value
-const datetime=document.getElementById("datetime").value
+    if(!service){
+        alert("ขออภัย ยังไม่มีบริการให้จองในขณะนี้");
+        return;
+    }
 
-if(datetime===""){
-alert("กรุณาเลือกวันเวลา")
-return
+    if(datetime === ""){
+        alert("กรุณาเลือกวันเวลา");
+        return;
+    }
+
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    bookings.push({
+        service: service,
+        datetime: datetime,
+        status: "รอการยืนยัน"
+    });
+
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+
+    alert("จองบริการสำเร็จ! กรุณารอการยืนยันจากแอดมิน");
+    window.location = "services.html"; 
 }
-
-alert("จองบริการสำเร็จ")
-
-window.location="services.html"
-
-}
-
-</script>
-<script>
-
-window.onload=function(){
-
-const service = localStorage.getItem("selectedService")
-
-document.getElementById("service").value = service
-
-}
-
 </script>
 </body>
 </html>

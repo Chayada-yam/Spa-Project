@@ -1,154 +1,93 @@
 <link rel="stylesheet" href="/css/style.css">
 
 <div class="navbar">
-
-<h2>Spa Booking</h2>
-
-<div class="menu">
-
-<a href="profile.html">โปรไฟล์</a>
-
-<a href="history.html">ประวัติ</a>
-
-<a href="#" onclick="logout()">ออกจากระบบ</a>
-
-<a href="admin.html">หน้าแอดมิน</a>
-
-
-</div>
-
+    <h2>Spa Booking</h2>
+    <div class="menu">
+        <a href="profile.html">โปรไฟล์</a>
+        <a href="history.html">ประวัติ</a>
+        <a href="#" onclick="logout()">ออกจากระบบ</a>
+        <a href="#" onclick="goToAdminLogin()">หน้าแอดมิน</a>
+    </div>
 </div>
 
 <h2>บริการสปา</h2>
 <div class="container">
+    <h2>บริการ</h2>
+    <div class="services">
 
-<h2>บริการ</h2>
+        <div class="card">
+            <img src="img/thai-massage.jpg" alt="Thai Massage">
+            <h3>Thai Massage</h3>
+            <p>Traditional Thai massage therapy</p>
+            <button onclick="goBooking('Thai Massage')">Book</button>
+        </div>
 
-<div class="services">
+        <div class="card">
+            <img src="img/facial-spa.jpg" alt="Facial Spa">
+            <h3>Facial Spa</h3>
+            <p>Relaxing facial skin treatment</p>
+            <button onclick="goBooking('Facial Spa')">Book</button>
+        </div>
 
-<div class="card">
+        <div class="card">
+            <img src="img/aroma.jpg" alt="Aromatherapy">
+            <h3>Aromatherapy</h3>
+            <p>Essential oil relaxing massage</p>
+            <button onclick="goBooking('Aromatherapy')">Book</button>
+        </div>
 
-<img src="img/thai-massage.jpg">
+        <div class="card">
+            <img src="img/hot-stone.jpg" alt="Hot Stone Massage">
+            <h3>Hot Stone Massage</h3>
+            <p>Hot stone muscle relaxation</p>
+            <button onclick="goBooking('Hot Stone Massage')">Book</button>
+        </div>
 
-<h3>Thai Massage</h3>
+        <div class="card">
+            <img src="img/body-scrub.jpg" alt="Body Scrub">
+            <h3>Body Scrub</h3>
+            <p>Skin exfoliation treatment</p>
+            <button onclick="goBooking('Body Scrub')">Book</button>
+        </div>
 
-<p>Traditional Thai massage therapy</p>
+        <div class="card">
+            <img src="img/foot-massage.jpg" alt="Foot Massage">
+            <h3>Foot Massage</h3>
+            <p>Foot pressure therapy</p>
+            <button onclick="goBooking('Foot Massage')">Book</button>
+        </div>
 
-<button onclick="goBooking('Thai Massage')">Book</button>
-
+    </div>
 </div>
-
-
-<div class="card">
-
-<img src="img/facial-spa.jpg">
-
-<h3>Facial Spa</h3>
-
-<p>Relaxing facial skin treatment</p>
-
-<button onclick="goBooking('Facial Spa')">Book</button>
-
-</div>
-
-
-<div class="card">
-
-<img src="img/aroma.jpg">
-
-<h3>Aromatherapy</h3>
-
-<p>Essential oil relaxing massage</p>
-
-<button onclick="goBooking('Aromatherapy')">Book</button>
-
-</div>
-
-
-<div class="card">
-
-<img src="img/hot-stone.jpg">
-
-<h3>Hot Stone Massage</h3>
-
-<p>Hot stone muscle relaxation</p>
-
-<button onclick="goBooking('Hot Stone Massage')">Book</button>
-
-</div>
-
-
-<div class="card">
-
-<img src="img/body-scrub.jpg">
-
-<h3>Body Scrub</h3>
-
-<p>Skin exfoliation treatment</p>
-
-<button onclick="goBooking('Body Scrub')">Book</button>
-
-</div>
-
-
-<div class="card">
-
-<img src="img/foot-massage.jpg">
-
-<h3>Foot Massage</h3>
-
-<p>Foot pressure therapy</p>
-
-<button onclick="goBooking('Foot Massage')">Book</button>
-
-</div>
-
-</div>
-
-</div>
-
 
 <script>
-
 /* เช็คก่อนจอง */
-
 function goBooking(service){
-
-localStorage.setItem("selectedService",service)
-
-const user = localStorage.getItem("user")
-
-if(!user){
-
-alert("กรุณาเข้าสู่ระบบก่อนจองบริการ")
-
-window.location="login.html"
-
-return
-
+    localStorage.setItem("selectedService",service)
+    const user = localStorage.getItem("user")
+    
+    if(!user){
+        alert("กรุณาเข้าสู่ระบบก่อนจองบริการ")
+        window.location="login.html"
+        return
+    }
+    window.location="booking.html"
 }
-
-window.location="booking.html"
-
-}
-
 
 /* โปรไฟล์ */
-
 function goProfile(){
-
-window.location="profile.html"
-
+    window.location="profile.html"
 }
 
-/* logout */
+/* บังคับไปหน้าล็อกอินเมื่อกดเข้าหน้าแอดมิน */
+function goToAdminLogin() {
+    localStorage.removeItem("isAdminLoggedIn"); // ล้างสถานะแอดมินเก่าทิ้ง
+    window.location.href = "login.html";
+}
 
+/* logout ของผู้ใช้ทั่วไป */
 function logout(){
-
-localStorage.removeItem("user")
-
-window.location="login.html"
-
+    localStorage.removeItem("user")
+    window.location="login.html"
 }
-
 </script>

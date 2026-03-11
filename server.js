@@ -4,10 +4,10 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 
 const app = express();
-const SECRET_KEY = "secretkey";
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -21,58 +21,93 @@ db.connect(err => {
     console.log("Database connected");
 });
 
+// --- ส่วนที่เพิ่ม: Middleware สำหรับ Protected API ---
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
     if (typeof bearerHeader !== 'undefined') {
-        const token = bearerHeader.split(' ')[1];
-        jwt.verify(token, SECRET_KEY, (err, authData) => {
-            if (err) return res.sendStatus(403);
-            req.user = authData;
-            next();
+        const bearer = bearerHeader.split(' ');
+        const token = bearer[1];
+        jwt.verify(token, "secretkey", (err, authData) => {
+            if (err) {
+                res.sendStatus(403); // Token ไม่ถูกต้อง
+            } else {
+                req.user = authData;
+                next(); // ผ่านไปทำ API ต่อได้
+            }
         });
     } else {
-        res.sendStatus(403);
+        res.sendStatus(403); // ไม่มี Token
     }
 }
 
-// --- API ---
-
+/* REGISTER */
 app.post("/api/register", (req, res) => {
     const { name, username, password } = req.body;
-    db.query("INSERT INTO users(name,username,password) VALUES(?,?,?)", [name, username, password], (err) => {
-        if (err) return res.json({ status: "error" });
-        res.json({ status: "success" });
-    });
+    db.query(
+        "INSERT INTO users(name,username,password) VALUES(?,?,?)",
+        [name, username, password],
+        (err, result) => {
+            if (err) return res.json({ status: "error" });
+            res.json({ status: "success" });
+        }
+    );
 });
 
+/* LOGIN */
 app.post("/api/login", (req, res) => {
     const { username, password } = req.body;
-    db.query("SELECT * FROM users WHERE username=? AND password=?", [username, password], (err, result) => {
-        if (result && result.length > 0) {
-            const token = jwt.sign({ id: result[0].id }, SECRET_KEY, { expiresIn: "1h" });
-            res.json({ status: "success", token, user: result[0] });
-        } else {
-            res.json({ status: "fail" });
+    db.query(
+        "SELECT * FROM users WHERE username=? AND password=?",
+        [username, password],
+        (err, result) => {
+            if (result.length > 0) {
+                const token = jwt.sign(
+                    { id: result[0].id, username: username },
+                    "secretkey",
+                    { expiresIn: "1h" }
+                );
+                res.json({
+                    status: "success",
+                    token: token,
+                    user: result[0]
+                });
+            } else {
+                res.json({ status: "fail" });
+            }
         }
-    });
+    );
 });
 
+/* SERVICES (Protected) */
 app.get("/api/services", verifyToken, (req, res) => {
     db.query("SELECT * FROM services", (err, result) => {
+        if (err) return res.status(500).send(err);
         res.json(result);
     });
 });
 
+/* BOOK (Protected) */
 app.post("/api/book", verifyToken, (req, res) => {
     const { user_id, service_id, date, time } = req.body;
-    db.query("SELECT * FROM bookings WHERE booking_date=? AND booking_time=?", [date, time], (err, result) => {
-        if (result && result.length > 0) return res.json({ status: "เต็ม" });
-        
-        db.query("INSERT INTO bookings(user_id,service_id,booking_date,booking_time) VALUES(?,?,?,?)", 
-        [user_id, service_id, date, time], (err) => {
-            res.json({ status: "success" });
-        });
-    });
+    // เช็คคิวซ้ำ
+    db.query(
+        "SELECT * FROM bookings WHERE booking_date=? AND booking_time=?",
+        [date, time],
+        (err, result) => {
+            if (result.length > 0) {
+                return res.json({ status: "เต็ม" });
+            }
+            // บันทึกการจอง
+            db.query(
+                "INSERT INTO bookings(user_id,service_id,booking_date,booking_time) VALUES(?,?,?,?)",
+                [user_id, service_id, date, time],
+                (err, result) => {
+                    if (err) return res.status(500).send(err);
+                    res.json({ status: "success" });
+                }
+            );
+        }
+    );
 });
 
 app.listen(3000, () => {

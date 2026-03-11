@@ -3,6 +3,30 @@ const mysql = require("mysql2")
 const cors = require("cors")
 const jwt = require("jsonwebtoken")
 
+function verifyToken(req,res,next){
+
+ const bearerHeader = req.headers['authorization']
+
+ if(typeof bearerHeader !== 'undefined'){
+
+  const bearer = bearerHeader.split('')
+  const token = bearer[1]
+
+  jwt.verify(token,"secretkey",(err,authData)=>{
+   if(err){
+    res.sendStatus(403)
+   }else{
+    req.user = authData
+    next()
+   }
+  })
+
+ }else{
+  res.sendStatus(403)
+ }
+
+}
+
 const app = express()
 
 app.use(cors())
@@ -55,8 +79,6 @@ db.query(
 
 if(result.length>0){
 
-if(result.length>0){
-
 const token = jwt.sign(
 { id: result[0].id },
 "secretkey",
@@ -83,7 +105,7 @@ res.json({status:"fail"})
 
 /* SERVICES */
 
-app.get("/api/services",(req,res)=>{
+app.get("/api/services", verifyToken ,(req,res)=>{
 
 db.query("SELECT * FROM services",(err,result)=>{
 
@@ -95,7 +117,7 @@ res.json(result)
 
 /* BOOK */
 
-app.post("/api/book",(req,res)=>{
+app.post("/api/book", verifyToken ,(req,res)=>{
 
 const {user_id,service_id,date,time}=req.body
 

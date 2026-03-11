@@ -1,47 +1,26 @@
-<link rel="stylesheet" href="/css/style.css">
+function book(){
 
-<div class="container">
+const service=document.getElementById("service").value
+const datetime=document.getElementById("datetime").value
 
-<h2>ประวัติการจอง</h2>
+if(datetime===""){
+alert("กรุณาเลือกวันเวลา")
+return
+}
 
-<table class="table">
+let bookings=JSON.parse(localStorage.getItem("bookings")) || []
 
-<thead>
-<tr>
-<th>Service</th>
-<th>Time</th>
-<th>Status</th>
-</tr>
-</thead>
+const booking={
+service:service,
+datetime:datetime
+}
 
-<tbody id="data"></tbody>
+bookings.push(booking)
 
-</table>
+localStorage.setItem("bookings",JSON.stringify(bookings))
 
-</div>
+alert("จองสำเร็จ")
 
-<script>
+window.location="history.html"
 
-fetch("/api/history")
-.then(res=>res.json())
-.then(data=>{
-
-let html=""
-
-data.forEach(b=>{
-
-html+=`
-<tr>
-<td>${b.name}</td>
-<td>${b.booking_time}</td>
-<td>${b.status}</td>
-</tr>
-`
-
-})
-
-document.getElementById("data").innerHTML=html
-
-})
-
-</script>
+}

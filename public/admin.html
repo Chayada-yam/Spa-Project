@@ -25,7 +25,23 @@ window.location="login.html"
 <div class="container">
 
 <h1>ระบบผู้ดูแลสปา</h1>
+<h2>รายการจองทั้งหมด</h2>
 
+<ul id="adminList"></ul>
+
+<script>
+
+const bookings=JSON.parse(localStorage.getItem("bookings")) || []
+
+const list=document.getElementById("adminList")
+
+bookings.forEach(b=>{
+const li=document.createElement("li")
+li.textContent=b.service+" - "+b.datetime
+list.appendChild(li)
+})
+
+</script>
 <h3>เพิ่มบริการ</h3>
 
 <input id="serviceName" placeholder="ชื่อบริการ">

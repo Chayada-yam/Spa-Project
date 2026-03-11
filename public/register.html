@@ -1,17 +1,47 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="th">
 <head>
-
 <meta charset="UTF-8">
 <title>สมัครสมาชิก</title>
-<link rel="stylesheet" href="css/style.css">
+
+<style>
+body{
+font-family: Arial;
+background:#f5f5f5;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.box{
+background:white;
+padding:30px;
+width:350px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#8e44ad;
+color:white;
+border:none;
+}
+</style>
 
 </head>
 
 <body>
 
-<div class="login-box">
+<div class="box">
 
 <h2>สมัครสมาชิก</h2>
 
@@ -21,21 +51,35 @@
 
 <input id="password" type="password" placeholder="รหัสผ่าน">
 
-<p class="hint">
-ต้องมีอักษรพิมพ์ใหญ่ 1 ตัว(รวม 8 ตัว)
-</p>
-
-<input id="confirm" type="password" placeholder="ยืนยันรหัสผ่าน">
-
-<p id="error" class="error"></p>
-
 <button onclick="register()">สมัครสมาชิก</button>
 
-<a href="login.html">กลับไปหน้าเข้าสู่ระบบ</a>
+<p><a href="login.html">กลับไปหน้าเข้าสู่ระบบ</a></p>
 
 </div>
 
-<script src="js/register.js"></script>
+<script>
+
+function register(){
+
+const name=document.getElementById("name").value
+const username=document.getElementById("username").value
+const password=document.getElementById("password").value
+
+const user={
+name:name,
+username:username,
+password:password
+}
+
+localStorage.setItem("user",JSON.stringify(user))
+
+alert("สมัครสมาชิกสำเร็จ")
+
+window.location="login.html"
+
+}
+
+</script>
 
 </body>
 </html>

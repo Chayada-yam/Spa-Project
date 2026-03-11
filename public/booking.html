@@ -1,9 +1,66 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="th">
 <head>
+<meta charset="UTF-8">
+<title>Book Service</title>
 
-<link rel="stylesheet" href="css/style.css">
+<style>
+
+body{
+font-family: Arial;
+background:#f5f5f5;
+padding:40px;
+}
+
+.container{
+width:500px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+}
+
+.service-img{
+width:100%;
+border-radius:8px;
+margin-bottom:15px;
+}
+
+select{
+width:200px;
+padding:8px;
+margin-top:10px;
+}
+
+input{
+width:220px;
+padding:8px;
+margin-top:10px;
+}
+
+button{
+padding:10px 20px;
+background:#8e44ad;
+color:white;
+border:none;
+border-radius:5px;
+margin-top:15px;
+cursor:pointer;
+}
+
+.back{
+margin-bottom:15px;
+display:inline-block;
+text-decoration:none;
+color:#333;
+}
+
+</style>
 
 </head>
 
@@ -11,24 +68,58 @@
 
 <div class="container">
 
+<a class="back" href="services.html">← กลับหน้าแรก</a>
+
 <h2>Book Service</h2>
 
+<img class="service-img" 
+src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874"
+alt="massage">
+
+<label>เลือกบริการ</label>
+<br>
+
 <select id="service">
-
-<option value="1">Thai Massage</option>
-<option value="2">Facial Spa</option>
-<option value="3">Body Scrub</option>
-<option value="4">Foot Massage</option>
-
+<option>Thai Massage</option>
+<option>Aroma Massage</option>
+<option>Foot Massage</option>
+<option>Hot Stone Massage</option>
+<option>Facial Spa/option>
+<option>Aromatherapy</option>
 </select>
 
-<input type="datetime-local" id="time">
+<br><br>
+
+<label>เลือกวันและเวลา</label>
+<br>
+
+<input type="datetime-local" id="datetime">
+
+<br><br>
 
 <button onclick="book()">Book</button>
 
 </div>
 
-<script src="js/script.js"></script>
+<script>
+
+function book(){
+
+const service=document.getElementById("service").value
+const datetime=document.getElementById("datetime").value
+
+if(datetime===""){
+alert("กรุณาเลือกวันเวลา")
+return
+}
+
+alert("จองบริการสำเร็จ")
+
+window.location="services.html"
+
+}
+
+</script>
 
 </body>
 </html>

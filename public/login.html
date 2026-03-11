@@ -1,31 +1,60 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="th">
 <head>
-
 <meta charset="UTF-8">
-
 <title>เข้าสู่ระบบ</title>
 
-<link rel="stylesheet" href="/css/style.css">
+<style>
+body{
+font-family: Arial;
+background:#f5f5f5;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
 
-<div class="container">
+.box{
+background:white;
+padding:30px;
+width:350px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#8e44ad;
+color:white;
+border:none;
+margin-top:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
 
 <h2>เข้าสู่ระบบ</h2>
 
-<input id="username" placeholder="ชื่อผู้ใช้">
-<input type="password" id="password" placeholder="รหัสผ่าน">
+<input id="username" placeholder="username">
 
-<p id="error"></p>
+<input id="password" type="password" placeholder="password">
 
 <button onclick="login()">เข้าสู่ระบบ</button>
-
-<br><br>
 
 <button onclick="goAdmin()">เข้าสู่ระบบแอดมิน</button>
 
 <p>ยังไม่มีบัญชี?</p>
-
 <a href="register.html">สมัครสมาชิก</a>
 
 </div>

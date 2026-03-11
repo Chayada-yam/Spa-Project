@@ -1,27 +1,21 @@
-document.getElementById("bookingForm")
-.addEventListener("submit", async e => {
+document.addEventListener("DOMContentLoaded", () => {
 
-e.preventDefault()
+const stars = document.querySelectorAll(".star")
 
-const form = new FormData(e.target)
+if(stars){
+stars.forEach((star,index)=>{
 
-const data = {
-service: form.get("service"),
-booking_date: form.get("booking_date")
+star.addEventListener("click",()=>{
+
+stars.forEach(s=>s.classList.remove("active"))
+
+for(let i=0;i<=index;i++){
+stars[i].classList.add("active")
 }
-
-const res = await fetch("/api/bookings",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify(data)
 
 })
 
-alert(await res.text())
+})
+}
 
 })

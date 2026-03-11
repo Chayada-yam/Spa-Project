@@ -56,33 +56,33 @@
 <body>
 
 <div style="width: 660px; margin: auto; text-align: right;">
-    <button class="btn-logout" onclick="logoutAdmin()">🚪 ออกจากระบบแอดมิน</button>
+    <button class="btn-logout" onclick="logoutAdmin()"> ออกจากระบบแอดมิน</button>
 </div>
 
 <div class="container">
-    <h2>🛠️ จัดการบริการ (Admin)</h2>
+    <h2>จัดการบริการ (Admin)</h2>
     <div class="input-group">
         <input type="text" id="serviceName" placeholder="เพิ่มชื่อบริการใหม่ (เช่น นวดแผนไทย)">
         <button class="btn-add" onclick="addService()">+ เพิ่มบริการ</button>
     </div>
-    <h3>📋 รายการบริการที่เปิดให้จอง</h3>
+    <h3>รายการบริการที่เปิดให้จอง</h3>
     <div id="serviceList"></div>
 </div>
 
 <div class="container">
-    <h3>🔔 การจองที่รอยืนยัน</h3>
+    <h3>การจองที่รอยืนยัน</h3>
     <div id="bookingList"></div>
 </div>
 
 <script>
-// 🔒 1. ระบบป้องกัน: เช็คตั้งแต่บรรทัดแรกว่าล็อกอินเป็นแอดมินหรือยัง
+//  1. ระบบป้องกัน: เช็คตั้งแต่บรรทัดแรกว่าล็อกอินเป็นแอดมินหรือยัง
 // ถ้าไม่มีสิทธิ์ จะเด้งไปหน้า login.html ทันทีและไม่ให้โหลดหน้าแอดมินต่อ
 if (localStorage.getItem("isAdminLoggedIn") !== "true") {
     alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้ กรุณาเข้าสู่ระบบในฐานะแอดมิน!");
     window.location.replace("login.html"); 
 }
 
-// 🚪 2. ฟังก์ชันออกจากระบบแอดมิน
+// 2. ฟังก์ชันออกจากระบบแอดมิน
 function logoutAdmin() {
     localStorage.removeItem("isAdminLoggedIn"); // ล้างสิทธิ์แอดมิน
     window.location.replace("login.html");

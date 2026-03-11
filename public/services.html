@@ -34,7 +34,7 @@
 
 <p>Traditional Thai massage therapy</p>
 
-<button onclick="goBooking()">Book</button>
+<button onclick="goBooking('Thai Massage')">Book</button>
 
 </div>
 
@@ -47,7 +47,7 @@
 
 <p>Relaxing facial skin treatment</p>
 
-<button onclick="goBooking()">Book</button>
+<button onclick="goBooking('Facial Spa')">Book</button>
 
 </div>
 
@@ -60,7 +60,7 @@
 
 <p>Essential oil relaxing massage</p>
 
-<button onclick="goBooking()">Book</button>
+<button onclick="goBooking('Aromatherapy')">Book</button>
 
 </div>
 
@@ -73,7 +73,7 @@
 
 <p>Hot stone muscle relaxation</p>
 
-<button onclick="goBooking()">Book</button>
+<button onclick="goBooking('Hot Stone Massage')">Book</button>
 
 </div>
 
@@ -86,7 +86,7 @@
 
 <p>Skin exfoliation treatment</p>
 
-<button onclick="goBooking()">Book</button>
+<button onclick="goBooking('Body Scrub')">Book</button>
 
 </div>
 
@@ -99,7 +99,7 @@
 
 <p>Foot pressure therapy</p>
 
-<button onclick="goBooking()">Book</button>
+<button onclick="goBooking('Foot Massage')">Book</button>
 
 </div>
 
@@ -112,7 +112,9 @@
 
 /* เช็คก่อนจอง */
 
-function goBooking(){
+function goBooking(service){
+
+localStorage.setItem("selectedService",service)
 
 const user = localStorage.getItem("user")
 
@@ -129,6 +131,7 @@ return
 window.location="booking.html"
 
 }
+
 
 /* โปรไฟล์ */
 

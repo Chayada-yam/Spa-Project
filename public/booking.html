@@ -120,6 +120,16 @@ window.location="services.html"
 }
 
 </script>
+<script>
 
+window.onload=function(){
+
+const service = localStorage.getItem("selectedService")
+
+document.getElementById("service").value = service
+
+}
+
+</script>
 </body>
 </html>

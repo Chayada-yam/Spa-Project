@@ -1,26 +1,41 @@
-function book(){
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>ประวัติการจอง</title>
+</head>
 
-const service=document.getElementById("service").value
-const datetime=document.getElementById("datetime").value
+<body>
 
-if(datetime===""){
-alert("กรุณาเลือกวันเวลา")
-return
+<h2>ประวัติการจอง</h2>
+
+<ul id="historyList"></ul>
+
+<script>
+
+const list = document.getElementById("historyList")
+
+let bookings = JSON.parse(localStorage.getItem("bookings"))
+
+if(!bookings || bookings.length === 0){
+
+list.innerHTML = "<li>ยังไม่มีการจอง</li>"
+
+}else{
+
+bookings.forEach(b=>{
+
+const li=document.createElement("li")
+
+li.textContent = b.service + " | " + b.datetime + " | สถานะ: " + (b.status || "รอการยืนยัน")
+
+list.appendChild(li)
+
+})
+
 }
 
-let bookings=JSON.parse(localStorage.getItem("bookings")) || []
+</script>
 
-const booking={
-service:service,
-datetime:datetime
-}
-
-bookings.push(booking)
-
-localStorage.setItem("bookings",JSON.stringify(bookings))
-
-alert("จองสำเร็จ")
-
-window.location="history.html"
-
-}
+</body>
+</html>

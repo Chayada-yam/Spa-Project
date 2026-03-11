@@ -16,6 +16,8 @@ if(username===storedUser.username && password===storedUser.password){
 
 alert("เข้าสู่ระบบสำเร็จ")
 
+localStorage.setItem("role","user")
+
 window.location="services.html"
 
 }else{
@@ -26,13 +28,16 @@ alert("เข้าสู่ระบบไม่สำเร็จ")
 
 }
 
-
 function goAdmin(){
 
-const username=document.getElementById("username").value
-const password=document.getElementById("password").value
+let username=document.getElementById("username").value
+let password=document.getElementById("password").value
 
 if(username==="admin" && password==="1234"){
+
+localStorage.setItem("role","admin")
+
+alert("เข้าสู่ระบบแอดมินสำเร็จ")
 
 window.location="admin.html"
 

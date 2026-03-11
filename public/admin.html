@@ -1,64 +1,130 @@
 <!DOCTYPE html>
-<html>
-<script>
-
-const user=JSON.parse(localStorage.getItem("user"))
-
-if(!user || user.role!=="admin"){
-
-alert("เฉพาะแอดมินเท่านั้น")
-window.location="login.html"
-
-}
-
-</script>
+<html lang="th">
 <head>
-
 <meta charset="UTF-8">
-<title>ผู้ดูแลระบบ</title>
-<link rel="stylesheet" href="css/style.css">
-
+<title>Admin</title>
 </head>
 
 <body>
 
-<div class="container">
+<h2>จัดการบริการ</h2>
 
-<h1>ระบบผู้ดูแลสปา</h1>
-<h2>รายการจองทั้งหมด</h2>
-
-<ul id="adminList"></ul>
-
-<script>
-
-const bookings=JSON.parse(localStorage.getItem("bookings")) || []
-
-const list=document.getElementById("adminList")
-
-bookings.forEach(b=>{
-const li=document.createElement("li")
-li.textContent=b.service+" - "+b.datetime
-list.appendChild(li)
-})
-
-</script>
-<h3>เพิ่มบริการ</h3>
-
-<input id="serviceName" placeholder="ชื่อบริการ">
-
-<input id="price" placeholder="ราคา">
-
+<input type="text" id="serviceName" placeholder="ชื่อบริการ">
 <button onclick="addService()">เพิ่มบริการ</button>
 
 <h3>รายการบริการ</h3>
 
 <div id="serviceList"></div>
 
-<button onclick="logout()">ออกจากระบบ</button>
+<h3>การจองที่รอยืนยัน</h3>
+
+<div id="bookingList"></div>
+
+<script>
+
+function loadServices(){
+
+const services = JSON.parse(localStorage.getItem("services")) || []
+
+let html=""
+
+services.forEach((s,i)=>{
+
+html+=`
+<div>
+${s}
+<button onclick="deleteService(${i})">ลบ</button>
+</div>
+`
+
+})
+
+document.getElementById("serviceList").innerHTML=html
+
+}
+
+function addService(){
+
+const name=document.getElementById("serviceName").value
+
+let services = JSON.parse(localStorage.getItem("services")) || []
+
+services.push(name)
+
+localStorage.setItem("services",JSON.stringify(services))
+
+loadServices()
+
+}
+
+function deleteService(i){
+
+let services = JSON.parse(localStorage.getItem("services")) || []
+
+services.splice(i,1)
+
+localStorage.setItem("services",JSON.stringify(services))
+
+loadServices()
+
+}
+
+function loadBookings(){
+
+const bookings = JSON.parse(localStorage.getItem("bookings")) || []
+
+let html=""
+
+bookings.forEach((b,i)=>{
+
+if(!b.status || b.status==="รอการยืนยัน"){
+
+html+=`
+<div>
+${b.service} | ${b.datetime}
+
+<button onclick="confirmBooking(${i})">ยืนยัน</button>
+<button onclick="cancelBooking(${i})">ยกเลิก</button>
 
 </div>
+`
 
-<script src="js/admin.js"></script>
+}
+
+})
+
+document.getElementById("bookingList").innerHTML=html
+
+}
+
+function confirmBooking(i){
+
+let bookings = JSON.parse(localStorage.getItem("bookings")) || []
+
+bookings[i].status="ยืนยันแล้ว"
+
+localStorage.setItem("bookings",JSON.stringify(bookings))
+
+loadBookings()
+
+}
+
+function cancelBooking(i){
+
+let bookings = JSON.parse(localStorage.getItem("bookings")) || []
+
+bookings[i].status="ยกเลิก"
+
+localStorage.setItem("bookings",JSON.stringify(bookings))
+
+loadBookings()
+
+}
+
+loadServices()
+loadBookings()
+
+</script>
 
 </body>
 </html>

@@ -1,9 +1,21 @@
-# SPA Booking System
+# Spa Project
+This project is created for DevOps course.
 
-Features
-- User register/login
-- Spa booking system
-- Prevent duplicate booking
-- Admin dashboard
-- Review system
-- CI/CD deployment
+Team Members
+- Chayada Somsri
+- Thanaphon Rangkanna
+
+## Project Features
+- Spa service booking
+- User login system
+- Appointment management
+- Spa information display
+
+## Techonology Used
+- Nodejs
+- Expressjs
+- HTML/CSS
+- Vercel Deployment
+
+## Deployment
+This project is deployed using Vercel.
